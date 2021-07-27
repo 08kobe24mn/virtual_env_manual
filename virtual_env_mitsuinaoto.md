@@ -1,0 +1,94 @@
+# 環境構築手順書
+
+## 作成する環境のver
+
+| 言語 | サーバ | DB | フレームワーク | OS |
+| :---: | :---: | :---: | :---: | :---: |
+| PHP7.3 | Nginx | MySQL5.7 | Laravel6.0| CentOS7|
+
+## 目次
+
+1. [vagrantの作業ディレクトリの作成](#1-vagrantの作業ディレクトリの作成)
+2. [vagrantfileの編集](#2-vagrantfileの編集)
+3. [vagrantプラグインのインストール](#3-vagrantプラグインのインストール)
+4. [vagrantを使用してゲストOSの起動](#4-vagrantを使用してゲストosの起動)
+5. [パッケージのインストール](#5-パッケージのインストール)
+6. [PHPのインストール](#6-phpのインストール)
+7. [composerのインストール](#7-composerのインストール)
+8. [MySQLのインストール](#8-mysqlのインストール)
+9. [Nginxのインストール](#9-nginxのインストール)
+10. [Laravelのインストール](#10-laravelのインストール)
+11. [Laravelを動かす](#11-laravelを動かす)
+12. [Laravelプロジェクト作成](#12-laravelプロジェクト作成)
+13. [Laravel認証機能作成](#13-laravel認証機能作成)
+
+## 1. vagrantの作業ディレクトリの作成
+
+以下のいずれかのディレクトリ下にvagrantの作業用ディレクトリを作成。  
+* 自分の作業用ディレクトリ
+* デスクトップ
+
+今回は**virtual_env_manual**という名前のディレクトリを作成し、作業を進めていきます。
+
+```
+mkdir virtual_env_manual
+cd virtual_env_manual
+```
+CentOS7のboxを追加します。  
+今回使用する仮想マシンはVirtual Boxなので、3を選択してEnterを押す。
+
+```
+vagrant box add centos/7
+
+1) hyperv
+2) libvirt
+3) virtualbox
+4) vmware_desktop
+
+Enter your choice: 3
+```
+
+以下のように表示されたらboxの追加は完了です。
+
+```
+Successfully added box 'centos/7' (v2004.01) for 'virtualbox'!
+```
+
+続いて仮想マシンの初期化を行い、初期設定ファイル(Vagrantfile)を作成する。
+
+```
+vagrant init centos/7
+```
+
+以下の文言が表示され、ディレクトリ内にVagrantfileが生成されていることが確認できればOKです。
+
+```
+A `Vagrantfile` has been placed in this directory. You are now  
+ready to `vagrant up` your first virtual environment! Please read  
+the comments in the Vagrantfile as well as documentation on  
+`vagrantup.com` for more information on using Vagrant.  
+```
+
+## 2. vagrantfileの編集
+
+## 3. vagrantプラグインのインストール
+
+## 4. vagrantを使用してゲストOSの起動
+
+## 5. パッケージのインストール
+
+## 6. PHPのインストール
+
+## 7. composerのインストール
+
+## 8. MySQLのインストール
+
+## 9. Nginxのインストール
+
+## 10. Laravelのインストール
+
+## 11. Laravelを動かす
+
+## 12. Laravelプロジェクト作成
+
+## 13. Laravel認証機能作成
