@@ -173,6 +173,19 @@ sudo yum -y groupinstall "development tools"
 
 ## 6. PHPのインストール
 
+PHPのインストールをしていきます。  
+今回はPHP7.3をインストールしていきます。
+
+```
+sudo yum -y install epel-release wget
+sudo wget http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+sudo rpm -Uvh remi-release-7.rpm
+sudo yum -y install --enablerepo=remi-php73 php php-pdo php-mysqlnd php-mbstring php-xml php-fpm php-common php-devel php-mysql unzip
+php -v
+```
+
+上記コマンドを実行後、PHPのバージョンが確認出来たらPHPのインストールは完了です。
+
 ## 7. composerのインストール
 
 ## 8. MySQLのインストール
