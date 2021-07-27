@@ -101,6 +101,18 @@ config.vm.synced_folder "./", "/vagrant", type:"virtualbox"
 
 ## 3. vagrantプラグインのインストール
 
+Vagrantには様々なプラグインが用意されています。  
+今回は**vagarnt-vbguest**をインストールします。  
+vagrant-vbguestとは、vagrantの起動時およびリロード時にGuestAdditonsのバージョンを  
+VirtualBoxのバージョンに合わせて最新化してくれるプラグインです。
+
+```
+vagrant plugin install vagrant-vbguest
+vagrant plugin list
+```
+
+上記でlistに追加されていればプラグインのインストールは完了です。
+
 ## 4. vagrantを使用してゲストOSの起動
 
 ## 5. パッケージのインストール
