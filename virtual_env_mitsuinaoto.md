@@ -71,6 +71,34 @@ the comments in the Vagrantfile as well as documentation on
 
 ## 2. vagrantfileの編集
 
+作成したVagrantfileの内容を編集します。
+3ヶ所編集します。
+
+<br>
+
+変更点1
+```
+# config.vm.network "forwarded_port", guest: 80, host: 8080
+↓
+config.vm.network "forwarded_port", guest: 80, host: 8080
+```
+
+変更点2
+```
+# config.vm.network "private_network", ip: "192.168.33.10"
+↓
+config.vm.network "private_network", ip: "192.168.33.19"
+```
+
+変更点3
+```
+# config.vm.synced_folder "../data", "/vagrant_data"
+↓
+config.vm.synced_folder "./", "/vagrant", type:"virtualbox"
+```
+
+上記3ヶ所を変更したらVagrantfileの編集は完了です。
+
 ## 3. vagrantプラグインのインストール
 
 ## 4. vagrantを使用してゲストOSの起動
