@@ -1,5 +1,10 @@
 # 環境構築手順書
 
+## はじめに
+
+今回ホストOSとして使用するのは、Windows10 Home  
+使用するターミナルは、Command Prompt
+
 ## 作成する環境のver
 
 | 言語 | サーバ | DB | フレームワーク | OS |
@@ -114,6 +119,45 @@ vagrant plugin list
 上記でlistに追加されていればプラグインのインストールは完了です。
 
 ## 4. vagrantを使用してゲストOSの起動
+
+Vagrantfileがあるディレクトリで以下のコマンドを実行してvagrantを起動する。
+
+```
+vagrant up
+```
+
+下記のコマンドで仮想マシンの状態を確認することができる。
+
+```
+vagrant status
+```
+
+実行した結果次のように表示されたら正常に起動できています。
+
+```
+Current machine states:
+
+default                   running (virtualbox)
+
+The VM is running. To stop this VM, you can run `vagrant halt` to
+shut it down forcefully, or you can run `vagrant suspend` to simply
+suspend the virtual machine. In either case, to restart it again,
+simply run `vagrant up`.
+```
+
+続いて、ゲストOSにログインをします。
+
+```
+vagrant ssh
+```
+
+上記コマンドを実行し、
+
+```
+[vagrant@localhost ~]$
+```
+
+と表示されたら接続成功です。
 
 ## 5. パッケージのインストール
 
