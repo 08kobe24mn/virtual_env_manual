@@ -188,6 +188,41 @@ php -v
 
 ## 7. composerのインストール
 
+PHPのパッケージ管理ツール**composer**をインストールします。
+
+<br>
+
+セットアップ用のPHPファイルをダウンロードします。  
+実行したディレクトリにcomposer-setup.phpがダウンロードされる。
+
+```
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+```
+
+ダウンロードしたファイルを実行します。
+
+```
+php composer-setup.php
+```
+
+実行した後は不要なので削除します。
+
+```
+php -r "unlink('composer-setup.php');"
+```
+
+どのディレクトリにいてもcomposerコマンドを使用できるようfileの移動を行います。
+
+```
+sudo mv composer.phar /usr/local/bin/composer
+```
+
+最後にバージョンを確認出来たらcomposerのインストールは完了です。
+
+```
+composer -v
+```
+
 ## 8. MySQLのインストール
 
 ## 9. Nginxのインストール
