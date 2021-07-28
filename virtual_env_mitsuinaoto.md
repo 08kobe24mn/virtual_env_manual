@@ -3,7 +3,11 @@
 ## はじめに
 
 今回ホストOSとして使用するのは、Windows10 Home  
-使用するターミナルは、Command Prompt
+使用するターミナルは、Command Prompt  
+VirtualBoxとVagrantはインストールされている状態を想定しています。  
+インストールがまだの方は先にインストールをお願いします。  
+[VirtualBoxのインストール](https://www.virtualbox.org/wiki/Downloads)  
+[Vagrantのインストール](https://www.vagrantup.com/downloads)
 
 ## 作成する環境のver
 
@@ -25,7 +29,8 @@
 10. [Laravelのインストール](#10-laravelのインストール)
 11. [Laravelを動かす](#11-laravelを動かす)
 12. [Laravelプロジェクト作成](#12-laravelプロジェクト作成)
-13. [Laravel認証機能作成](#13-laravel認証機能作成)
+13. [Laravel認証機能作成](#13-laravel認証機能作成)  
+[参考情報](#参考情報)
 
 ## 1. vagrantの作業ディレクトリの作成
 
@@ -225,6 +230,91 @@ composer -v
 
 ## 8. MySQLのインストール
 
+今回インストールするデータベースは、MySQL5.7です。
+
+```
+sudo wget https://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm
+sudo rpm -Uvh mysql57-community-release-el7-7.noarch.rpm
+sudo yum install -y mysql-community-server
+mysql --version
+```
+
+上記コマンドを実行し、最後にバージョンが確認出来たらインストール完了です。  
+続いてMySQLを起動し接続します。  
+まずはMySQLのパスワードを変更します。
+
+初期設定の段階では、大文字＋小文字の英数字＋記号を含んだ8文字以上に設定しなければいけません。  
+非常に面倒なので、シンプルなパスワードを設定できるよう設定ファイルを編集します。
+
+```
+sudo vi /etc/my.cnf
+```
+
+変更するのは一ヶ所だけです。  
+validate-password=OFFを指定の場所に追加してください。
+
+```
+# For advice on how to change settings please see
+# http://dev.mysql.com/doc/refman/5.7/en/server-configuration-defaults.html
+
+[mysqld]
+#
+# Remove leading # and set to the amount of RAM for the most important data
+# cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.
+# innodb_buffer_pool_size = 128M
+#
+# Remove leading # to turn on a very important data integrity option: logging
+# changes to the binary log between backups.
+# log_bin
+#
+# Remove leading # to set options mainly useful for reporting servers.
+# The server defaults are faster for transactions and fast SELECTs.
+# Adjust sizes as needed, experiment to find the optimal values.
+# join_buffer_size = 128M
+# sort_buffer_size = 2M
+# read_rnd_buffer_size = 2M
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+validate-password=OFF <-追加
+
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+```
+
+編集が完了したら、MySQLを起動します。
+
+```
+sudo systemctl start mysqld
+```
+
+続いて初期パスワードを確認します。
+
+```
+sudo cat /var/log/mysqld.log | grep 'temporary password'
+2021-01-01T00:00:00.000000Z 1 [Note] A temporary password is generated for root@localhost: <初期パスワード>
+```
+
+初期パスワードをコピーしてください。  
+Enter password:の部分にコピーした初期パスワードを貼り付け、Enterを押すと接続できます。
+
+```
+mysql -u root -p
+Enter password:<初期パスワード>
+mysql>
+```
+
+次に接続した状態でpasswordの変更を行います。  
+
+```
+mysql > set password = "新しいpassword";
+```
+
+これでMySQLのインストールと設定完了です。
+
+
 ## 9. Nginxのインストール
 
 ## 10. Laravelのインストール
@@ -234,3 +324,9 @@ composer -v
 ## 12. Laravelプロジェクト作成
 
 ## 13. Laravel認証機能作成
+
+## 参考情報
+
+[Qiita CentOS7 + Vagrant環境でLaravel構築 - 入門](https://qiita.com/Larkpop36/items/1991d5fd33759f3fc643)
+
+[[PHP] Composerをインストールする方法](https://webbibouroku.com/Blog/Article/php-composer-setup)
