@@ -28,8 +28,7 @@ VirtualBoxとVagrantはインストールされている状態を想定してい
 9. [Nginxのインストール](#9-nginxのインストール)
 10. [Laravelを表示する](#10-laravelを表示する)
 11. [MySQLのインストール](#11-mysqlのインストール)
-12. [Laravelプロジェクト作成](#12-laravelプロジェクト作成)
-13. [Laravel認証機能作成](#13-laravel認証機能作成)  
+12. [Laravel認証機能作成](#12-laravel認証機能作成)  
 [参考情報](#参考情報)
 
 <br>
@@ -438,15 +437,43 @@ Laravelのhomeが表示されたらエラー解決です。
 
 ```
 sudo wget https://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm
+
 sudo rpm -Uvh mysql57-community-release-el7-7.noarch.rpm
+
 sudo yum install -y mysql-community-server
+
 mysql --version
 ```
 
 上記コマンドを実行し、最後にバージョンが確認出来たらインストール完了です。  
 続いてMySQLを起動し接続します。  
-まずはMySQLのパスワードを変更します。
 
+編集が完了したら、MySQLを起動します。
+
+```
+sudo systemctl start mysqld
+```
+
+続いて初期パスワードを確認します。
+
+```
+sudo cat /var/log/mysqld.log | grep 'temporary password'
+
+2021-01-01T00:00:00.000000Z 1 [Note] A temporary password is generated for root@localhost: <初期パスワード>
+```
+
+初期パスワードをコピーしてください。  
+Enter password:の部分にコピーした初期パスワードを貼り付け、Enterを押すと接続できます。
+
+```
+mysql -u root -p
+
+Enter password:<初期パスワード>
+
+mysql>
+```
+
+続いて、パスワードの設定を行うのですが、  
 初期設定の段階では、大文字＋小文字の英数字＋記号を含んだ8文字以上に設定しなければいけません。  
 非常に面倒なので、シンプルなパスワードを設定できるよう設定ファイルを編集します。
 
@@ -488,40 +515,52 @@ log-error=/var/log/mysqld.log
 pid-file=/var/run/mysqld/mysqld.pid
 ```
 
-編集が完了したら、MySQLを起動します。
+編集後、MySQLの再起動が必要となります。
 
 ```
-sudo systemctl start mysqld
+sudo systemctl restart mysqld
 ```
 
-続いて初期パスワードを確認します。
-
-```
-sudo cat /var/log/mysqld.log | grep 'temporary password'
-2021-01-01T00:00:00.000000Z 1 [Note] A temporary password is generated for root@localhost: <初期パスワード>
-```
-
-初期パスワードをコピーしてください。  
-Enter password:の部分にコピーした初期パスワードを貼り付け、Enterを押すと接続できます。
-
-```
-mysql -u root -p
-Enter password:<初期パスワード>
-mysql>
-```
-
-次に接続した状態でpasswordの変更を行います。  
+再度初期パスワードを使って接続し、passwordの変更を行います。
 
 ```
 mysql > set password = "新しいpassword";
 ```
 
+最後に使用するDBを作成します。
+
+```
+mysql > create database DBの名前;
+```
+
 これでMySQLのインストールと設定完了です。
 
+<br>
 
-## 12. Laravelプロジェクト作成
+## 12. Laravel認証機能作成
 
-## 13. Laravel認証機能作成
+最後にLaravelの認証機能を作成していきます。
+
+まず、laravel_sampleディレクトリ下の```.env```ファイルの内容を編集します。
+
+```
+DB_PASSWORD=
+↓
+DB_PASSWORD=登録したパスワード
+```
+
+laravel_sampleディレクトリに移動後、以下のコマンドを実行します。
+
+```
+composer require laravel/ui "^1.0" --dev
+
+php artisan ui vue --auth
+
+php artisan migrate
+```
+マイグレーションが問題なく実行できた後、ブラウザ上でユーザー登録ができれば完了です。
+
+
 
 ## 参考情報
 
@@ -530,3 +569,5 @@ mysql > set password = "新しいpassword";
 [[PHP] Composerをインストールする方法](https://webbibouroku.com/Blog/Article/php-composer-setup)
 
 [Nginx を CentOS 7 にインストールする手順](https://weblabo.oscasierra.net/nginx-centos7-install/)
+
+[Laravel 6.x 認証](https://readouble.com/laravel/6.x/ja/authentication.html)
