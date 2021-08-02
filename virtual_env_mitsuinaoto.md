@@ -17,20 +17,22 @@ VirtualBoxとVagrantはインストールされている状態を想定してい
 
 ## 目次
 
-1. [vagrantの作業ディレクトリの作成](#1-vagrantの作業ディレクトリの作成)
+1. [作業ディレクトリの作成](#1-作業ディレクトリの作成)
 2. [vagrantfileの編集](#2-vagrantfileの編集)
 3. [vagrantプラグインのインストール](#3-vagrantプラグインのインストール)
 4. [vagrantを使用してゲストOSの起動](#4-vagrantを使用してゲストosの起動)
 5. [パッケージのインストール](#5-パッケージのインストール)
 6. [PHPのインストール](#6-phpのインストール)
 7. [composerのインストール](#7-composerのインストール)
-8. [MySQLのインストール](#8-mysqlのインストール)
+8. [Laravelのインストール](#8-laravelのインストール)
 9. [Nginxのインストール](#9-nginxのインストール)
-10. [Laravelのインストール](#10-laravelのインストール)
+10. [MySQLのインストール](#10-mysqlのインストール)
 11. [Laravelを動かす](#11-laravelを動かす)
 12. [Laravelプロジェクト作成](#12-laravelプロジェクト作成)
 13. [Laravel認証機能作成](#13-laravel認証機能作成)  
 [参考情報](#参考情報)
+
+<br>
 
 ## 1. vagrantの作業ディレクトリの作成
 
@@ -42,6 +44,7 @@ VirtualBoxとVagrantはインストールされている状態を想定してい
 
 ```
 mkdir virtual_env_manual
+
 cd virtual_env_manual
 ```
 CentOS7のboxを追加します。  
@@ -79,6 +82,8 @@ the comments in the Vagrantfile as well as documentation on
 `vagrantup.com` for more information on using Vagrant.  
 ```
 
+<br>
+
 ## 2. vagrantfileの編集
 
 作成したVagrantfileの内容を編集します。
@@ -109,6 +114,8 @@ config.vm.synced_folder "./", "/vagrant", type:"virtualbox"
 
 上記3ヶ所を変更したらVagrantfileの編集は完了です。
 
+<br>
+
 ## 3. vagrantプラグインのインストール
 
 Vagrantには様々なプラグインが用意されています。  
@@ -118,10 +125,13 @@ VirtualBoxのバージョンに合わせて最新化してくれるプラグイ�
 
 ```
 vagrant plugin install vagrant-vbguest
+
 vagrant plugin list
 ```
 
 上記でlistに追加されていればプラグインのインストールは完了です。
+
+<br>
 
 ## 4. vagrantを使用してゲストOSの起動
 
@@ -162,7 +172,25 @@ vagrant ssh
 [vagrant@localhost ~]$
 ```
 
-と表示されたら接続成功です。
+ログイン後、カーネルをアップデートします。
+
+```
+sudo yum -y update kernel
+
+sudo yum -y install kernel-devel kernel-headers kernel-tools kernel-tools-libs
+```
+
+インストールが完了したら一度Vagrantを再起動します。
+
+```
+exit
+
+vagrant reload
+```
+
+再度ログインできたら完了です。
+
+<br>
 
 ## 5. パッケージのインストール
 
@@ -176,6 +204,8 @@ sudo yum -y groupinstall "development tools"
 
 上記コマンドで、開発に必要なパッケージを一括でインストールできます。
 
+<br>
+
 ## 6. PHPのインストール
 
 PHPのインストールをしていきます。  
@@ -183,13 +213,19 @@ PHPのインストールをしていきます。
 
 ```
 sudo yum -y install epel-release wget
+
 sudo wget http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+
 sudo rpm -Uvh remi-release-7.rpm
+
 sudo yum -y install --enablerepo=remi-php73 php php-pdo php-mysqlnd php-mbstring php-xml php-fpm php-common php-devel php-mysql unzip
+
 php -v
 ```
 
 上記コマンドを実行後、PHPのバージョンが確認出来たらPHPのインストールは完了です。
+
+<br>
 
 ## 7. composerのインストール
 
@@ -228,7 +264,74 @@ sudo mv composer.phar /usr/local/bin/composer
 composer -v
 ```
 
-## 8. MySQLのインストール
+<br>
+
+## 8. Laravelのインストール
+
+Laravelのバージョン6.0を導入していきます。  
+準備としてLaravelを導入するディレクトリに移動しましょう。
+
+```
+cd /vagrant
+```
+
+Laravel6.0をインストール
+
+```
+composer create-project laravel/laravel=6.0 --prefer-dist laravel_sample
+```
+
+インストールしたLaravelのディレクトリに移動してバージョンを確認
+
+```
+cd laravel_sample
+
+php artisan --version
+```
+
+6.xになっていれば成功です。
+
+<br>
+
+## 9. Nginxのインストール
+
+Nginxの最新版をインストールしていきます。  
+viエディタを使用して以下のファイルを作成・編集していきます。
+
+```
+sudo vi /etc/yum.repos.d/nginx.repo
+```
+
+作成したファイルには次のように記述します。
+
+```
+[nginx]
+name=nginx repo
+baseurl=https://nginx.org/packages/mainline/centos/\$releasever/\$basearch/
+gpgcheck=0
+enabled=1
+```
+
+続いてNginxをインストールしていきます。
+
+```
+sudo yum install -y nginx
+nginx -v
+```
+
+Nginxのバージョンは確認できましたか？
+確認出来たらNginxを起動しましょう。
+
+```
+sudo systemctl start nginx
+```
+
+起動したら、Vagrantfileで設定したipアドレスにアクセスしてみましょう。
+NginxのWelcomeページが表示されたら完了です。
+
+<br>
+
+## 10. MySQLのインストール
 
 今回インストールするデータベースは、MySQL5.7です。
 
@@ -314,11 +417,6 @@ mysql > set password = "新しいpassword";
 
 これでMySQLのインストールと設定完了です。
 
-
-## 9. Nginxのインストール
-
-## 10. Laravelのインストール
-
 ## 11. Laravelを動かす
 
 ## 12. Laravelプロジェクト作成
@@ -330,3 +428,5 @@ mysql > set password = "新しいpassword";
 [Qiita CentOS7 + Vagrant環境でLaravel構築 - 入門](https://qiita.com/Larkpop36/items/1991d5fd33759f3fc643)
 
 [[PHP] Composerをインストールする方法](https://webbibouroku.com/Blog/Article/php-composer-setup)
+
+[Nginx を CentOS 7 にインストールする手順](https://weblabo.oscasierra.net/nginx-centos7-install/)
