@@ -26,8 +26,8 @@ VirtualBoxとVagrantはインストールされている状態を想定してい
 7. [composerのインストール](#7-composerのインストール)
 8. [Laravelのインストール](#8-laravelのインストール)
 9. [Nginxのインストール](#9-nginxのインストール)
-10. [MySQLのインストール](#10-mysqlのインストール)
-11. [Laravelを動かす](#11-laravelを動かす)
+10. [Laravelを表示する](#10-laravelを表示する)
+11. [MySQLのインストール](#11-mysqlのインストール)
 12. [Laravelプロジェクト作成](#12-laravelプロジェクト作成)
 13. [Laravel認証機能作成](#13-laravel認証機能作成)  
 [参考情報](#参考情報)
@@ -312,26 +312,127 @@ gpgcheck=0
 enabled=1
 ```
 
-続いてNginxをインストールしていきます。
+入力方法は  
+**i**でインサートモードにし、編集後**esc**でインサートを終了し、**:wq**で保存して終了します。  
+続いてNginxをインストールしていきます。  
+laravel_sampleでコマンドを実行します。
 
 ```
 sudo yum install -y nginx
+
 nginx -v
 ```
 
-Nginxのバージョンは確認できましたか？
+Nginxのバージョンは確認できましたか？  
 確認出来たらNginxを起動しましょう。
 
 ```
 sudo systemctl start nginx
 ```
 
-起動したら、Vagrantfileで設定したipアドレスにアクセスしてみましょう。
+起動したら、Vagrantfileで設定したipアドレスにアクセスしてみましょう。  
 NginxのWelcomeページが表示されたら完了です。
 
 <br>
 
-## 10. MySQLのインストール
+## 10. Laravelを表示する
+
+まず、Nginxのファイルを編集します。
+
+```
+sudo vi /etc/nginx/conf.d/default.conf
+```
+
+```
+server {
+  listen       80;
+  server_name  192.168.33.19; # Vagranfileでコメントを外した箇所のipアドレスを記述してください
+  root /vagrant/laravel_sample/public; # 追記
+  index  index.html index.htm index.php; # 追記
+
+  #charset koi8-r;
+  #access_log  /var/log/nginx/host.access.log  main;
+
+  location / {
+      #root   /usr/share/nginx/html; # コメントアウト
+      #index  index.html index.htm;  # コメントアウト
+      try_files $uri $uri/ /index.php$is_args$args;  # 追記
+  }
+
+  # 省略
+
+  # 以下の該当箇所のコメントアウトを指定の箇所外し、変更する場所もあるので変更を加える
+  location ~ \.php$ {
+  #    root           html;
+      fastcgi_pass   127.0.0.1:9000;
+      fastcgi_index  index.php;
+      fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name;  # $fastcgi_script_name以前を /$document_root/に変更
+      include        fastcgi_params;
+  }
+  ```
+
+続いてPHPインストール時にインストールしたphp-fpmの設定ファイルを編集していきます。
+
+```
+sudo vi /etc/php-fpm.d/www.conf
+```
+
+```
+;24行目近辺
+user = apache
+↓ 変更
+user = vagrant
+
+group = apache
+↓ 変更
+group = vagrant
+```
+
+編集が完了したらNginxを再起動してphp-fpmを起動しましょう。
+
+```
+sudo systemctl restart nginx
+
+sudo systemctl start php-fpm
+```
+
+403 Forbidden というエラーが出た場合。
+
+```
+sudo vi /etc/selinux/config
+```
+
+一ヶ所記述を変更してください。
+
+```
+SELINUX=enforcing
+↓
+SELINUX=disabled
+```
+
+保存を反映させるためにVagrantを再起動し、再接続しましょう。
+
+```
+exit
+
+vagrant reload
+
+vagrant ssh
+```
+
+Nginxを再起動、php-fpmを起動しましょう。
+
+```
+sudo systemctl restart nginx
+
+sudo systemctl start php-fpm
+```
+
+Laravelのhomeが表示されたらエラー解決です。
+
+<br>
+
+## 11. MySQLのインストール
 
 今回インストールするデータベースは、MySQL5.7です。
 
@@ -417,7 +518,6 @@ mysql > set password = "新しいpassword";
 
 これでMySQLのインストールと設定完了です。
 
-## 11. Laravelを動かす
 
 ## 12. Laravelプロジェクト作成
 
