@@ -615,6 +615,8 @@ php artisan migrate
 抵抗なく英語を読めるようになり、エラーメッセージをすらすら読めるよう今後努力していきたいと考えています。
 
 
+
+
 ## 参考情報
 
 [Qiita CentOS7 + Vagrant環境でLaravel構築 - 入門](https://qiita.com/Larkpop36/items/1991d5fd33759f3fc643)
