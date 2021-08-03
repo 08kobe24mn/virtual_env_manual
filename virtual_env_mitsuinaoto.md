@@ -92,6 +92,10 @@ the comments in the Vagrantfile as well as documentation on
 <br>
 
 変更点1
+
+ポートフォワーディングの設定を行います。  
+今回はゲストOS（Vagrant）の80番の通信をホストOS（MacやWindows）の8080番へ転送します。
+
 ```
 # config.vm.network "forwarded_port", guest: 80, host: 8080
 ↓
@@ -99,6 +103,10 @@ config.vm.network "forwarded_port", guest: 80, host: 8080
 ```
 
 変更点2
+
+プライベートネットワークの設定を行います。  
+今回ipアドレスは`192.168.33.19`を使用します。
+
 ```
 # config.vm.network "private_network", ip: "192.168.33.10"
 ↓
@@ -106,6 +114,9 @@ config.vm.network "private_network", ip: "192.168.33.19"
 ```
 
 変更点3
+
+ホストOS(MacやWindows)の`virtual_env_manual`ディレクトリ内と、  
+ゲストOS(Vagrant)の`/vagrant`のディレクトリ内をリアルタイムで同期する設定を行います。
 ```
 # config.vm.synced_folder "../data", "/vagrant_data"
 ↓
@@ -211,15 +222,35 @@ sudo yum -y groupinstall "development tools"
 PHPのインストールをしていきます。  
 今回はPHP7.3をインストールしていきます。
 
+<br>
+
+EPELのリポジトリを追加
+
 ```
 sudo yum -y install epel-release wget
+```
 
+REMIのリポジトリを追加
+
+```
 sudo wget http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+```
 
+インストールしたパッケージをアップグレードする
+
+```
 sudo rpm -Uvh remi-release-7.rpm
+```
 
+PHPのインストールと、PHPアプリケーションを動かすうえで必要となる拡張機能をインストール
+
+```
 sudo yum -y install --enablerepo=remi-php73 php php-pdo php-mysqlnd php-mbstring php-xml php-fpm php-common php-devel php-mysql unzip
+```
 
+PHPのバージョン確認
+
+```
 php -v
 ```
 
@@ -543,6 +574,18 @@ mysql > create database DBの名前;
 最後にLaravelの認証機能を作成していきます。
 
 まず、laravel_sampleディレクトリ下の```.env```ファイルの内容を編集します。
+
+```
+DB_DATABASE=laravel
+↓
+DB_DATABASE=前の章で作成したDB名
+```
+
+```
+DB_USERNAME=root
+↓
+DB_USERNAME=新しく作成したユーザー名（作成していなければrootのまま）
+```
 
 ```
 DB_PASSWORD=
